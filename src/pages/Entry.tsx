@@ -1,41 +1,45 @@
 import {
+  IonBackButton, IonButtons,
   IonContent,
   IonHeader,
-  IonItem,
-  IonLabel,
-  IonList,
   IonPage, IonTitle,
   IonToolbar
 } from '@ionic/react';
+import { useParams } from 'react-router';
 import { entries } from '../data';
 import './Home.css';
 
+interface RouteParams {
+  id: string;
+}
+
 const Home: React.FC = () => {
+  // Get id from url params
+  const id = useParams<RouteParams>().id;
+  const entry = entries.find(entry => entry.id === id);
+
+  if (!entry) {
+    throw new Error(`No entry found with id ${id}`);
+  }
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Home</IonTitle>
+        <IonButtons slot="start">
+          <IonBackButton />
+        </IonButtons>
+          <IonTitle>{entry.title}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Home page</IonTitle>
+            <IonTitle size="large">{entry.title}</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent className='ion-padding'>
-          <IonList>
-            {entries.map(entry => (
-              <IonItem
-                button
-                key={entry.id}
-                routerLink={`/my/entries/${entry.id}`}
-                >
-                <IonLabel>{entry.title}</IonLabel>
-              </IonItem>
-            ))}
-          </IonList>
+          {entry.description}
         </IonContent>
       </IonContent>
     </IonPage>

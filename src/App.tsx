@@ -1,45 +1,42 @@
 import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact
+  IonApp, IonRouterOutlet, setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { homeOutline, settingsOutline } from 'ionicons/icons';
-import { Redirect, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Settings from './pages/Settings';
+import { useState } from 'react';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import AppTabs from './components/AppTabs';
+import { AuthContext } from './context/auth';
+import Login from './pages/Login';
+import NotFound from './pages/NotFound';
+
 
 setupIonicReact();
 
-const App: React.FC = () => (
+const App: React.FC = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  console.log(`rendering App with isLoggedIn: ${loggedIn}`);
+
+  return (
   <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/settings" component={Settings} />
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot='bottom'>
-          <IonTabButton tab="home" href="/home">
-            <IonIcon icon={homeOutline} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="settings" href="/settings">
-            <IonIcon icon={settingsOutline} />
-            <IonLabel>Settings</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
+    <AuthContext.Provider value={{ loggedIn }}>
+      <IonReactRouter>
+        <Switch>
+          <IonRouterOutlet>
+            <Route exact path="/login">
+              <Login loggedIn={loggedIn} onLogin={() => setLoggedIn(true)} />
+            </Route>
+            <Route path="/my">
+              <AppTabs />
+            </Route>
+            <Redirect exact path='/' to="/my/entries" />
+            <Route component={NotFound} />
+          </IonRouterOutlet>
+        </Switch>
+      </IonReactRouter>
+    </AuthContext.Provider>
   </IonApp>
-);
+  );
+};
 
 export default App;
