@@ -1,12 +1,18 @@
 import {
+  IonButton,
   IonContent,
   IonHeader,
   IonPage, IonTitle,
   IonToolbar
 } from '@ionic/react';
+import { auth } from '../firebase';
 import './Home.css';
 
-const Settings: React.FC = () => {
+const SettingsPage: React.FC = () => {
+  const handleLogout = async () => {
+    await auth.signOut();
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -21,11 +27,14 @@ const Settings: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className='ion-padding'>
-          This is the settings page.
+          <IonButton
+            expand="block"
+            onClick={handleLogout}
+          >Logout</IonButton>
         </IonContent>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Settings;
+export default SettingsPage;

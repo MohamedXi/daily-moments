@@ -1,30 +1,36 @@
 import {
-  IonApp, IonRouterOutlet, setupIonicReact
+  IonApp, IonLoading, IonRouterOutlet, setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import AppTabs from './components/AppTabs';
-import { AuthContext } from './context/auth';
+import { AuthContext, useAuthInit } from './context/auth';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-
+import Register from './pages/Register';
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { isLoading, auth } = useAuthInit();
 
-  console.log(`rendering App with isLoggedIn: ${loggedIn}`);
+  if (isLoading) {
+    return <IonLoading isOpen />;
+  }
+
+  console.log(`rendering App with auth: ${auth.loggedIn}`);
 
   return (
   <IonApp>
-    <AuthContext.Provider value={{ loggedIn }}>
+    <AuthContext.Provider value={auth}>
       <IonReactRouter>
         <Switch>
           <IonRouterOutlet>
             <Route exact path="/login">
-              <Login loggedIn={loggedIn} onLogin={() => setLoggedIn(true)} />
+              <Login />
+            </Route>
+            <Route exact path="/register">
+              <Register />
             </Route>
             <Route path="/my">
               <AppTabs />

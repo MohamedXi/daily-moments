@@ -10,9 +10,10 @@ import {
 import { homeOutline, settingsOutline } from 'ionicons/icons';
 import { Redirect, Route } from 'react-router-dom';
 import { useAuth } from '../context/auth';
-import Entry from '../pages/Entry';
-import Home from '../pages/Home';
-import Settings from '../pages/Settings';
+import AddEntryPage from '../pages/AddEntry';
+import EntryPage from '../pages/Entry';
+import HomePage from '../pages/Home';
+import SettingsPage from '../pages/Settings';
 
 setupIonicReact();
 
@@ -26,9 +27,10 @@ const AppTabs: React.FC = () => {
   return (
     <IonTabs>
       <IonRouterOutlet>
-        <Route exact path="/my/entries" component={Home} />
-        <Route exact path="/my/entries/:id" component={Entry} />
-        <Route exact path="/my/settings" component={Settings} />
+        <Route exact path="/my/entries" component={HomePage} />
+        <Route exact path="/my/entries/add" component={AddEntryPage} />
+        <Route exact path="/my/entries/:id/see" component={EntryPage} />
+        <Route exact path="/my/settings" component={SettingsPage} />
         <Redirect exact path='/' to="/my/entries" />
       </IonRouterOutlet>
       <IonTabBar slot='bottom'>

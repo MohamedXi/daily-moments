@@ -11,6 +11,12 @@
 # production
 /build
 
+# compiled typescript
+/dist
+/build
+/android
+/ios
+
 # misc
 .DS_Store
 .env.local

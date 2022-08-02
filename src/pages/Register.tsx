@@ -18,30 +18,33 @@ import { useAuth } from '../context/auth';
 import { auth } from '../firebase';
 import './Home.css';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState({isLoading: false, error: false});
 
   const { loggedIn } = useAuth();
-  
-  const handleLogin = async () => {
+
+  const handleRegister = async () => {
     try {
-      await auth.signInWithEmailAndPassword(email, password);
+      await auth.createUserWithEmailAndPassword(email, password);
     } catch (error) {
       setStatus({isLoading: false, error: true});
     }
   }
+
+  console.log('loggedIn', loggedIn);
+  
   
   if (loggedIn) {
     return <Redirect to="/my/entries" />;
   }
-  
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Login</IonTitle>
+          <IonTitle>Register</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className='ion-padding'>
@@ -75,18 +78,20 @@ const Login: React.FC = () => {
             />
           </IonItem>
         </IonList>
-        {status.error && 
-          <IonText color="danger">
-            An error occurred. Please try again.
-          </IonText>
-        }
+        {status.error && <IonText color="danger">Invalid email or password</IonText>}
         <IonGrid>
           <IonRow>
             <IonCol size="12" size-sm="3">
-              <IonButton expand="block" onClick={handleLogin}>Login</IonButton>
+              <IonButton expand="block" onClick={handleRegister}>Register</IonButton>
             </IonCol>
             <IonCol size="12" size-sm="3">
-              <IonButton fill='clear' expand="block" href="/register">Register</IonButton>
+              <IonButton
+                fill='clear' 
+                className='ion-text-center'
+                expand="block"
+                href="/login">
+                  Login
+              </IonButton>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -96,4 +101,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Register;

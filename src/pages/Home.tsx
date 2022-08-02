@@ -1,16 +1,35 @@
 import {
-  IonContent,
-  IonHeader,
-  IonItem,
+  IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonImg, IonItem,
   IonLabel,
   IonList,
-  IonPage, IonTitle,
+  IonPage, IonText, IonThumbnail, IonTitle,
   IonToolbar
 } from '@ionic/react';
-import { entries } from '../data';
+import { add } from 'ionicons/icons';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/auth';
+import { firestore } from '../firebase';
+import { Entry, toEntry } from '../models';
 import './Home.css';
 
-const Home: React.FC = () => {
+const HomePage: React.FC = () => {
+  const [entries, setEntries] = useState<Entry[]>([]);
+
+  const { userId } = useAuth();
+
+  useEffect(() => {
+    const entriesRef = firestore
+      .collection('users')
+      .doc(userId)
+      .collection('entries');
+    return entriesRef
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(snapshot => {
+      const newEntries = snapshot.docs.map(doc => toEntry(doc));
+      setEntries(newEntries);
+    })
+  }, [userId]);
+
   return (
     <IonPage>
       <IonHeader>
@@ -18,28 +37,45 @@ const Home: React.FC = () => {
           <IonTitle>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Home page</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className='ion-padding'>
+      <IonContent className='ion-padding'>
+        {entries.length > 0 ? (
           <IonList>
-            {entries.map(entry => (
+            {entries.map((entry: any) => (
               <IonItem
                 button
                 key={entry.id}
-                routerLink={`/my/entries/${entry.id}`}
+                routerLink={`/my/entries/${entry.id}/see`}
                 >
-                <IonLabel>{entry.title}</IonLabel>
+                <IonThumbnail slot="start">
+                  {entry.pictureUrl ? (
+                    <IonImg src={entry.pictureUrl} alt={entry.title} />
+                  ) : <IonImg src='assets/no-image.jpeg' alt='placeholder' />}
+                </IonThumbnail>
+                <IonLabel>
+                  <IonText>
+                    <h2>{entry.title}</h2>
+                  </IonText>
+                  <IonText color='dark'>
+                    <p>{entry.description}</p>
+                  </IonText>
+                  <IonText color='medium'>
+                    <h6>{new Date(entry.createdAt).toLocaleDateString()}</h6>
+                  </IonText>
+                </IonLabel>
               </IonItem>
             ))}
           </IonList>
-        </IonContent>
+        ) : (
+          <IonText color='medium' className='ion-text-center'>No entries yet</IonText>
+        )}
+        <IonFab vertical='bottom' horizontal='end'>
+          <IonFabButton routerLink='/my/entries/add'>
+            <IonIcon icon={add} />
+          </IonFabButton>
+        </IonFab>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Home;
+export default HomePage;

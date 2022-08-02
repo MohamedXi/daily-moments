@@ -3,16 +3,19 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "ionic serve",
-    "cap": "ionic capacitor run android --livereload --external",
+    "web": "ionic serve",
+    "android": "ionic capacitor run android --livereload --external",
+    "ios": "ionic capacitor run ios --livereload --external",
     "build": "ionic build",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'"
   },
   "dependencies": {
     "@capacitor/android": "4.0.1",
     "@capacitor/app": "4.0.1",
+    "@capacitor/camera": "^4.0.1",
     "@capacitor/core": "4.0.1",
     "@capacitor/haptics": "4.0.1",
+    "@capacitor/ios": "4.0.1",
     "@capacitor/keyboard": "4.0.1",
     "@capacitor/splash-screen": "^4.0.1",
     "@capacitor/status-bar": "4.0.1",
